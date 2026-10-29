@@ -1,0 +1,1 @@
+This is a text file and it reads text from anywhere in the world and shows it to you, basically its just a nonsense 1s and 0s written like a early stage LLM would write, totally random.
