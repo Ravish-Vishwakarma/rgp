@@ -9,8 +9,12 @@ fn main() -> io::Result<()> {
         let current_dir = Path::new(".");
         let mut file_list: Vec<PathBuf> = Vec::new();
         get_all_file(current_dir, &mut file_list)?;
+        let word = args[1].to_string().to_lowercase();
         for file in file_list {
-            println!("{}", file.display());
+            // println!("{}", file.display());
+            if let Some(file_lines) = read_file_to_line(&file) {
+                search_and_print_file_for_word(&file, file_lines, &word);
+            }
         }
     }
     Ok(())
@@ -31,16 +35,21 @@ fn get_all_file(dir: &Path, files: &mut Vec<PathBuf>) -> io::Result<()> {
     Ok(())
 }
 
-fn read_file_to_line(file_path: PathBuf) -> Option<Vec<String>> {
+fn read_file_to_line(file_path: &PathBuf) -> Option<Vec<String>> {
     let content = fs::read_to_string(file_path).ok()?;
 
     let lines: Vec<String> = content.lines().map(String::from).collect();
     Some(lines)
 }
 
-fn search_and_print_file_for_word(file: Vec<String>, word: String) {
+fn search_and_print_file_for_word(filepath: &PathBuf, file: Vec<String>, word: &String) {
+    let mut said_file_name = false;
     for (index, line) in file.iter().enumerate() {
-        if line.contains(&word) {
+        if line.to_lowercase().contains(word) {
+            if !said_file_name {
+                said_file_name = true;
+                println!("{}", filepath.display());
+            }
             println!("{} : {}", index, line)
         }
     }
